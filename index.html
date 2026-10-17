@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lead to Customer CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f5;--panel:#fff;--ink:#14202e;--mute:#5d6b7c;--line:#d7dde5;--accent:#1f4fd8;--accent-ink:#fff;--won:#0e7c5a;--wonbg:#dff3ea;--lost:#b3402f;--col:#e4e9f0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e141c;--panel:#18212d;--ink:#e8edf3;--mute:#97a4b4;--line:#2b3746;--accent:#6c93ff;--accent-ink:#0e141c;--won:#4cd1a2;--wonbg:#123b2e;--lost:#ff8a78;--col:#131b25}}
+:root[data-theme="dark"]{--bg:#0e141c;--panel:#18212d;--ink:#e8edf3;--mute:#97a4b4;--line:#2b3746;--accent:#6c93ff;--accent-ink:#0e141c;--won:#4cd1a2;--wonbg:#123b2e;--lost:#ff8a78;--col:#131b25}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3,.num{font-family:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;padding:18px 20px 8px}
+h1{font-size:22px;margin:0;font-weight:700;letter-spacing:-.01em}
+.stats{display:flex;gap:22px;flex-wrap:wrap;margin-left:auto}
+.stat b{display:block;font:700 22px "Bricolage Grotesque",sans-serif}
+.stat span{color:var(--mute);font-size:13px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;padding:8px 20px 14px;align-items:center}
+input,select,textarea,button{font:inherit;color:inherit}
+input,select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+.bar input{max-width:260px}
+button{cursor:pointer;border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:8px 12px}
+button.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
+button.del{color:var(--lost)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.chk{display:flex;gap:6px;align-items:center;color:var(--mute);font-size:14px}
+label.chk input{width:auto}
+.board{display:flex;gap:12px;padding:0 20px 24px;overflow-x:auto;align-items:flex-start}
+.col{flex:0 0 250px;background:var(--col);border-radius:10px;padding:10px;min-height:200px}
+.col.over{outline:2px dashed var(--accent)}
+.col.cust{border-top:4px solid var(--won)}
+.col h2{font-size:15px;margin:2px 4px 10px;display:flex;justify-content:space-between;gap:8px}
+.col h2 small{font:400 13px "IBM Plex Sans",sans-serif;color:var(--mute)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:grab}
+.card:hover{border-color:var(--accent)}
+.card b{display:block}
+.card .co{color:var(--mute);font-size:13px}
+.card .val{margin-top:6px;font-weight:500;font-size:14px}
+.cust .card .val{color:var(--won)}
+.fu{margin-top:4px;font-size:12px;color:var(--mute)}.fu.over{color:var(--lost);font-weight:500}.fu.today{color:var(--accent);font-weight:500}
+.empty{color:var(--mute);font-size:13px;padding:8px 4px}
+.scrim{position:fixed;inset:0;background:rgba(10,15,22,.5);display:none;z-index:20}
+.scrim.on{display:block}
+aside{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--panel);border-left:1px solid var(--line);padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(18px + env(safe-area-inset-bottom,0px));overflow-y:auto;transform:translateX(100%);transition:transform .2s;z-index:30}
+aside.on{transform:none}
+aside h2{margin:0 0 12px;font-size:20px}
+.f{margin-bottom:10px}.f label{display:block;font-size:13px;color:var(--mute);margin-bottom:3px}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.log{border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+.log div{padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+.log time{display:block;color:var(--mute);font-size:12px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--won);color:#fff;padding:10px 16px;border-radius:8px;display:none;z-index:40}
+@media (prefers-reduced-motion:reduce){aside{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Lead to customer</h1><p style="margin:2px 0 0;color:var(--mute);font-size:13px">Record leads, schedule follow-ups, forecast revenue</p></div>
+  <div class="stats">
+    <div class="stat"><b id="sLeads">0</b><span>Open leads</span></div>
+    <div class="stat"><b id="sPipe">0</b><span>Pipeline value</span></div>
+    <div class="stat" title="Open deals weighted by stage: New 10%, Contacted 25%, Qualified 50%, Proposal 75%"><b id="sFore">0</b><span>Expected revenue</span></div>
+    <div class="stat"><b id="sConv">0%</b><span>Converted</span></div>
+    <div class="stat"><b id="sWon">0</b><span>Customer revenue</span></div>
+    <div class="stat"><b id="sDue">0</b><span>Follow-ups due</span></div>
+  </div>
+</header>
+<div class="bar">
+  <button class="pri" id="add">Add lead</button>
+  <input id="q" type="search" placeholder="Search name, company or email" aria-label="Search leads">
+  <label class="chk"><input type="checkbox" id="showLost"> Show lost leads</label>
+  <label class="chk"><input type="checkbox" id="dueOnly"> Only follow-ups due</label>
+  <button id="csv">Export CSV</button>
+</div>
+<main class="board" id="board"></main>
+<div class="scrim" id="scrim"></div>
+<aside id="drawer" aria-label="Lead details"></aside>
+<div class="toast" id="toast"></div>
+
+<script>
+const STAGES=[["new","New"],["contacted","Contacted"],["qualified","Qualified"],["proposal","Proposal sent"],["customer","Customer"]];
+const KEY="minicrm.v1";
+const PROB={new:.1,contacted:.25,qualified:.5,proposal:.75,customer:1,lost:0};
+const ymd=t=>new Date(t-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const today=()=>ymd(Date.now());
+const isDue=l=>l.followup&&l.followup<=today()&&!['customer','lost'].includes(l.stage);
+const fuc=l=>l.followup<today()?'over':l.followup===today()?'today':'';
+const ful=l=>l.followup<today()?'overdue, '+l.followup:l.followup===today()?'today':l.followup;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money=n=>new Intl.NumberFormat(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
+const now=()=>new Date().toISOString();
+const fmt=t=>new Date(t).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});
+const uid=()=>Math.random().toString(36).slice(2,9);
+let leads=load(),openId=null;
+
+function seed(){const n=(d)=>new Date(Date.now()-d*864e5).toISOString();
+ const L=(name,company,email,value,stage,source,d)=>({id:uid(),name,company,email,phone:"",value,stage,source,created:n(d),followup:stage==="customer"?"":ymd(Date.now()+(d%3-1)*864e5),log:[{t:n(d),x:"Lead added from "+source}]});
+ return [L("Maya Okafor","Brightline Studio","maya@brightline.example",4800,"new","Website",1),L("Tomas Weber","Weber & Sons","tomas@weber.example",12000,"contacted","Referral",4),L("Priya Nair","Northgate Clinic","priya@northgate.example",7500,"qualified","Event",8),L("Jonas Lind","Lind Logistics","jonas@lind.example",21000,"proposal","Cold outreach",12),L("Elena Rossi","Rossi Bakery","elena@rossi.example",3200,"customer","Referral",20)]}
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(leads))}catch(e){}}
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display="none",2200)}
+
+function render(){
+ const q=$("#q").value.toLowerCase(),sl=$("#showLost").checked;
+ const cols=sl?[...STAGES,["lost","Lost"]]:STAGES;
+ const due=$("#dueOnly").checked;
+ const match=l=>(!q||[l.name,l.company,l.email].join(" ").toLowerCase().includes(q))&&(!due||isDue(l));
+ $("#board").innerHTML=cols.map(([k,label])=>{
+  const items=leads.filter(l=>l.stage===k&&match(l));
+  const total=items.reduce((s,l)=>s+(+l.value||0),0);
+  return `<section class="col ${k==="customer"?"cust":""}" data-stage="${k}"><h2>${label}<small>${items.length} · ${money(total)}</small></h2>`+
+  (items.length?items.map(l=>`<div class="card" draggable="true" tabindex="0" role="button" data-id="${l.id}"><b>${esc(l.name)}</b><span class="co">${esc(l.company)||"No company"}</span><div class="val">${money(l.value)}</div>${l.followup?`<div class="fu ${fuc(l)}">Follow up ${ful(l)}</div>`:""}</div>`).join(""):`<div class="empty">${k==="new"?"Add a lead to start.":"Drag a lead here."}</div>`)+`</section>`}).join("");
+ const open=leads.filter(l=>!["customer","lost"].includes(l.stage)),won=leads.filter(l=>l.stage==="customer"),closed=leads.filter(l=>l.stage==="lost").length+won.length;
+ $("#sLeads").textContent=open.length;
+ $("#sPipe").textContent=money(open.reduce((s,l)=>s+(+l.value||0),0));
+ $("#sConv").textContent=(closed?Math.round(won.length/closed*100):0)+"%";
+ $("#sWon").textContent=money(won.reduce((s,l)=>s+(+l.value||0),0));
+ $("#sFore").textContent=money(open.reduce((s,l)=>s+(+l.value||0)*(PROB[l.stage]||0),0));
+ $("#sDue").textContent=leads.filter(isDue).length;
+ wire();
+}
+function move(id,stage){
+ const l=leads.find(x=>x.id===id);if(!l||l.stage===stage)return;
+ const lab=(STAGES.find(s=>s[0]===stage)||[0,"Lost"])[1];
+ l.stage=stage;if(stage==="customer"||stage==="lost")l.followup="";l.log.unshift({t:now(),x:"Moved to "+lab});save();render();
+ if(stage==="customer")toast(l.name+" is now a customer");
+ if(openId===id)drawer(id);
+}
+function wire(){
+ document.querySelectorAll(".card").forEach(c=>{
+  c.onclick=()=>drawer(c.dataset.id);
+  c.onkeydown=e=>{if(e.key==="Enter")drawer(c.dataset.id)};
+  c.ondragstart=e=>{e.dataTransfer.setData("text/plain",c.dataset.id)};
+ });
+ document.querySelectorAll(".col").forEach(c=>{
+  c.ondragover=e=>{e.preventDefault();c.classList.add("over")};
+  c.ondragleave=()=>c.classList.remove("over");
+  c.ondrop=e=>{e.preventDefault();c.classList.remove("over");move(e.dataTransfer.getData("text/plain"),c.dataset.stage)};
+ });
+}
+function drawer(id){
+ const isNew=!id,l=isNew?{name:"",company:"",email:"",phone:"",value:"",source:"Website",stage:"new",log:[]}:leads.find(x=>x.id===id);
+ openId=id;
+ const idx=STAGES.findIndex(s=>s[0]===l.stage),next=STAGES[idx+1];
+ const d=$("#drawer");
+ d.innerHTML=`<h2>${isNew?"New lead":esc(l.name)}</h2>
+ <div class="f"><label for="fn">Name</label><input id="fn" value="${esc(l.name)}"></div>
+ <div class="f"><label for="fc">Company</label><input id="fc" value="${esc(l.company)}"></div>
+ <div class="row"><div class="f"><label for="fe">Email</label><input id="fe" type="email" value="${esc(l.email)}"></div><div class="f"><label for="fp">Phone</label><input id="fp" value="${esc(l.phone)}"></div></div>
+ <div class="row"><div class="f"><label for="fv">Deal value (USD)</label><input id="fv" type="number" min="0" value="${esc(l.value)}"></div>
+ <div class="f"><label for="fs">Source</label><select id="fs">${["Website","Referral","Event","Cold outreach","Social","Other"].map(s=>`<option ${s===l.source?"selected":""}>${s}</option>`).join("")}</select></div></div>
+ <div class="row"><div class="f"><label for="ff">Next follow-up</label><input id="ff" type="date" value="${esc(l.followup)}"></div><div class="f"><label>Quick set</label><div class="acts" style="margin:0"><button type="button" data-d="1">Tomorrow</button><button type="button" data-d="7">In a week</button></div></div></div>
+ <div class="acts"><button class="pri" id="ok">${isNew?"Add lead":"Save changes"}</button>${!isNew&&l.followup?`<button id="fdone">Follow-up done</button>`:""}
+ ${!isNew&&next?`<button id="adv">${next[0]==="customer"?"Convert to customer":"Move to "+next[1]}</button>`:""}
+ ${!isNew&&l.stage!=="lost"&&l.stage!=="customer"?`<button id="lost" class="del">Mark lost</button>`:""}
+ ${!isNew&&l.stage==="lost"?`<button id="reopen">Reopen lead</button>`:""}
+ ${!isNew?`<button id="rm" class="del">Delete</button>`:""}<button id="cl">Close</button></div>
+ ${isNew?"":`<div class="f"><label for="nt">Add a note or activity</label><textarea id="nt" rows="2" placeholder="Called, sent quote, left voicemail"></textarea><div class="acts"><button id="addnote">Add note</button></div></div>
+ <div class="log"><h3 style="margin:0 0 4px;font-size:15px">Activity</h3>${l.log.map(e=>`<div><time>${fmt(e.t)}</time>${esc(e.x)}</div>`).join("")}</div>`}`;
+ d.classList.add("on");$("#scrim").classList.add("on");
+ const read=()=>({name:$("#fn").value.trim(),company:$("#fc").value.trim(),email:$("#fe").value.trim(),phone:$("#fp").value.trim(),value:+$("#fv").value||0,source:$("#fs").value,followup:$("#ff").value});
+ $("#cl").onclick=close;
+ document.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{$("#ff").value=ymd(Date.now()+ +b.dataset.d*864e5)});
+ $("#fdone")&&($("#fdone").onclick=()=>{l.log.unshift({t:now(),x:"Follow-up done ("+l.followup+")"});l.followup="";save();render();drawer(id);toast("Follow-up marked done")});
+ $("#ok").onclick=()=>{const v=read();if(!v.name){$("#fn").focus();toast("Enter a name first");return}
+  if(isNew){leads.push({id:uid(),...v,stage:"new",created:now(),log:[{t:now(),x:"Lead added from "+v.source}]});toast("Lead added")}
+  else{if(v.followup&&v.followup!==l.followup)l.log.unshift({t:now(),x:"Follow-up scheduled for "+v.followup});Object.assign(l,v);toast("Saved")}
+  save();render();close()};
+ if(!isNew){
+  $("#adv")&&($("#adv").onclick=()=>move(id,next[0]));
+  $("#lost")&&($("#lost").onclick=()=>move(id,"lost"));
+  $("#reopen")&&($("#reopen").onclick=()=>move(id,"new"));
+  $("#rm").onclick=()=>{if(confirm("Delete "+l.name+"? This cannot be undone.")){leads=leads.filter(x=>x.id!==id);save();render();close()}};
+  $("#addnote").onclick=()=>{const t=$("#nt").value.trim();if(!t)return;l.log.unshift({t:now(),x:t});save();drawer(id)};
+ }
+ setTimeout(()=>$("#fn").focus(),50);
+}
+function close(){openId=null;$("#drawer").classList.remove("on");$("#scrim").classList.remove("on")}
+$("#add").onclick=()=>drawer(null);
+$("#scrim").onclick=close;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+$("#q").oninput=render;$("#showLost").onchange=render;$("#dueOnly").onchange=render;
+$("#csv").onclick=()=>{
+ const h=["name","company","email","phone","value","source","stage","followup"];
+ const rows=[h.join(","),...leads.map(l=>h.map(k=>'"'+String(l[k]??"").replace(/"/g,'""')+'"').join(","))].join("\n");
+ navigator.clipboard?.writeText(rows).then(()=>toast("CSV copied to clipboard"),()=>toast("Copy not available here"));
+};
+render();
+</script>
+</body>
+</html>
